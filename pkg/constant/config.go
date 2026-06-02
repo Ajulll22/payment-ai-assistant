@@ -10,10 +10,16 @@ type Config struct {
 	AssistantSQL      AssistantConfig
 	AssistantAnalytic AssistantConfig
 	DB                DBConfig
+	Log               LogConfig
 }
 
 func GetEnv() *Config {
 	dbTimeout, _ := strconv.Atoi(os.Getenv("DB_TIMEOUT"))
+	dbLogMaxFile, _ := strconv.Atoi(os.Getenv("DB_LOG_MAX_FILE"))
+
+	logRequestStatus, _ := strconv.ParseBool(os.Getenv("LOG_REQUEST_STATUS"))
+	logDebugStatus, _ := strconv.ParseBool(os.Getenv("LOG_DEBUG_STATUS"))
+	logMaxFile, _ := strconv.Atoi(os.Getenv("LOG_MAX_FILE"))
 
 	return &Config{
 		App: AppConfig{
@@ -30,12 +36,21 @@ func GetEnv() *Config {
 			URL:   os.Getenv("ASSISTANT_ANALYTIC_URL"),
 		},
 		DB: DBConfig{
-			User:     os.Getenv("DB_USER"),
-			Password: os.Getenv("DB_PASSWORD"),
-			Name:     os.Getenv("DB_NAME"),
-			Host:     os.Getenv("DB_HOST"),
-			Port:     os.Getenv("DB_PORT"),
-			Timeout:  dbTimeout,
+			User:       os.Getenv("DB_USER"),
+			Password:   os.Getenv("DB_PASSWORD"),
+			Name:       os.Getenv("DB_NAME"),
+			Host:       os.Getenv("DB_HOST"),
+			Port:       os.Getenv("DB_PORT"),
+			Timeout:    dbTimeout,
+			LogMaxFile: dbLogMaxFile,
+		},
+		Log: LogConfig{
+			Path:          os.Getenv("LOG_PATH"),
+			DebugFilename: os.Getenv("LOG_DEBUG_FILENAME"),
+			ErrorFilename: os.Getenv("LOG_ERROR_FILENAME"),
+			RequestStatus: logRequestStatus,
+			DebugStatus:   logDebugStatus,
+			MaxFile:       logMaxFile,
 		},
 	}
 }
@@ -52,10 +67,20 @@ type AssistantConfig struct {
 }
 
 type DBConfig struct {
-	User     string
-	Password string
-	Name     string
-	Host     string
-	Port     string
-	Timeout  int
+	User       string
+	Password   string
+	Name       string
+	Host       string
+	Port       string
+	Timeout    int
+	LogMaxFile int
+}
+
+type LogConfig struct {
+	Path          string
+	RequestStatus bool
+	DebugStatus   bool
+	MaxFile       int
+	DebugFilename string
+	ErrorFilename string
 }

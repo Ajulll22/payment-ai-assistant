@@ -1,7 +1,21 @@
 package database
 
+import (
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/Ajulll22/payment-ai-assistant/pkg/logger"
+	"github.com/Ajulll22/payment-ai-assistant/pkg/security"
+	"gorm.io/driver/sqlserver"
+	"gorm.io/gorm"
+	gormLog "gorm.io/gorm/logger"
+)
 
 type SQLConfig struct {
+	AppKey string
+
 	User        string
 	PasswordEnc string
 	Host        string
@@ -10,13 +24,12 @@ type SQLConfig struct {
 	Timeout     int
 
 	LogDir          string
-	LogName         string
-	MaxLogDays      int
+	LogMaxFile      int
 	FallbackLogFile *os.File
 }
 
 func SQLConnect(cfg SQLConfig) (db *gorm.DB, err error) {
-	clear_password := security.Decrypt(cfg.PasswordEnc, "62277ecdae08d9e813ab17a4ec2db8c58db38e398617824a2ef035c64d3da4be")
+	clear_password := security.Decrypt(cfg.PasswordEnc, cfg.AppKey)
 
 	dsn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", cfg.User, clear_password, cfg.Host, cfg.Port, cfg.Name)
 
@@ -33,7 +46,7 @@ func CloseDB(db *gorm.DB) {
 
 func waitForSQLServer(dsn string, timeout time.Duration, cfg SQLConfig) (db *gorm.DB, err error) {
 	start := time.Now()
-	gormLogger := logger.GetGormLogger(cfg.LogDir, cfg.LogName, cfg.MaxLogDays, gormLog.Info, cfg.FallbackLogFile)
+	gormLogger := logger.GetGormLogger(cfg.LogDir, cfg.Name, cfg.LogMaxFile, gormLog.Info, cfg.FallbackLogFile)
 
 	for {
 		// Coba koneksi ke SQL Server

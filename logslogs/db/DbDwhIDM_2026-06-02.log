@@ -1,0 +1,18 @@
+
+2026/06/02 14:02:45 D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+[info] replacing callback `gorm:create` from D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+
+2026/06/02 14:02:45 D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+[info] replacing callback `gorm:update` from D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+
+2026/06/02 14:09:30 D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+[info] replacing callback `gorm:create` from D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+
+2026/06/02 14:09:30 D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+[info] replacing callback `gorm:update` from D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+
+2026/06/02 14:14:00 D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+[info] replacing callback `gorm:create` from D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+
+2026/06/02 14:14:00 D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
+[info] replacing callback `gorm:update` from D:/Project/Me/Golang/payment-ai-assistant/pkg/database/sql.go:53
