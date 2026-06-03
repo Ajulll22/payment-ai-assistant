@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Register(router *gin.Engine, db *gorm.DB, cfg *constant.Config) {
+func Register(router *gin.Engine, dbApp, dbDWH *gorm.DB, cfg *constant.Config) {
 
 	router.GET("/echo", func(c *gin.Context) {
 		res := handling.ResponseSuccess("test", "Echo test", "")

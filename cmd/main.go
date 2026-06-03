@@ -19,7 +19,8 @@ import (
 )
 
 type program struct {
-	db      *gorm.DB
+	dbApp   *gorm.DB
+	dbDWH   *gorm.DB
 	cfg     *constant.Config
 	server  *gin.Engine
 	logFile *os.File
@@ -59,15 +60,15 @@ func (p *program) Init(env svc.Environment) error {
 	cfg := constant.GetEnv()
 	p.cfg = cfg
 
-	db, err := database.SQLConnect(database.SQLConfig{
-		User:            cfg.DB.User,
-		PasswordEnc:     cfg.DB.Password,
-		Host:            cfg.DB.Host,
-		Port:            cfg.DB.Port,
-		Name:            cfg.DB.Name,
-		Timeout:         cfg.DB.Timeout,
+	dbApp, err := database.SQLConnect(database.SQLConfig{
+		User:            cfg.DBApp.User,
+		PasswordEnc:     cfg.DBApp.Password,
+		Host:            cfg.DBApp.Host,
+		Port:            cfg.DBApp.Port,
+		Name:            cfg.DBApp.Name,
+		Timeout:         cfg.DBApp.Timeout,
 		LogDir:          cfg.Log.Path + "logs/db",
-		LogMaxFile:      cfg.DB.LogMaxFile,
+		LogMaxFile:      cfg.DBApp.LogMaxFile,
 		FallbackLogFile: p.logFile,
 		AppKey:          cfg.App.Key,
 	})
@@ -75,7 +76,25 @@ func (p *program) Init(env svc.Environment) error {
 		log.Printf("database connection failed: %v", err)
 		return err
 	}
-	p.db = db
+	dbDWH, err := database.SQLConnect(database.SQLConfig{
+		User:            cfg.DBDWH.User,
+		PasswordEnc:     cfg.DBDWH.Password,
+		Host:            cfg.DBDWH.Host,
+		Port:            cfg.DBDWH.Port,
+		Name:            cfg.DBDWH.Name,
+		Timeout:         cfg.DBDWH.Timeout,
+		LogDir:          cfg.Log.Path + "logs/db",
+		LogMaxFile:      cfg.DBDWH.LogMaxFile,
+		FallbackLogFile: p.logFile,
+		AppKey:          cfg.App.Key,
+	})
+	if err != nil {
+		log.Printf("database connection failed: %v", err)
+		return err
+	}
+
+	p.dbApp = dbApp
+	p.dbDWH = dbDWH
 
 	validation.RegisterCustomValidation()
 
@@ -84,7 +103,7 @@ func (p *program) Init(env svc.Environment) error {
 	app.Use(middleware.RecoveryMiddleware(cfg.Log))
 	app.Use(middleware.SetIPMiddleware())
 
-	route.Register(app, db, cfg)
+	route.Register(app, dbApp, dbDWH, cfg)
 	p.server = app
 
 	log.Println("Init: complete")
@@ -105,8 +124,11 @@ func (p *program) Start() error {
 func (p *program) Stop() error {
 	log.Println("Stop: closing all connection")
 
-	if p.db != nil {
-		database.CloseDB(p.db)
+	if p.dbApp != nil {
+		database.CloseDB(p.dbApp)
+	}
+	if p.dbDWH != nil {
+		database.CloseDB(p.dbDWH)
 	}
 
 	if p.logFile != nil {

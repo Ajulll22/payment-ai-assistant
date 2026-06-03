@@ -9,13 +9,16 @@ type Config struct {
 	App               AppConfig
 	AssistantSQL      AssistantConfig
 	AssistantAnalytic AssistantConfig
-	DB                DBConfig
+	DBApp             DBConfig
+	DBDWH             DBConfig
 	Log               LogConfig
 }
 
 func GetEnv() *Config {
-	dbTimeout, _ := strconv.Atoi(os.Getenv("DB_TIMEOUT"))
-	dbLogMaxFile, _ := strconv.Atoi(os.Getenv("DB_LOG_MAX_FILE"))
+	dbAppTimeout, _ := strconv.Atoi(os.Getenv("DB_APP_TIMEOUT"))
+	dbAppLogMaxFile, _ := strconv.Atoi(os.Getenv("DB_APP_LOG_MAX_FILE"))
+	dbDWHTimeout, _ := strconv.Atoi(os.Getenv("DB_DWH_TIMEOUT"))
+	dbDWHLogMaxFile, _ := strconv.Atoi(os.Getenv("DB_DWH_LOG_MAX_FILE"))
 
 	logRequestStatus, _ := strconv.ParseBool(os.Getenv("LOG_REQUEST_STATUS"))
 	logDebugStatus, _ := strconv.ParseBool(os.Getenv("LOG_DEBUG_STATUS"))
@@ -35,14 +38,23 @@ func GetEnv() *Config {
 			Model: os.Getenv("ASSISTANT_ANALYTIC_MODEL"),
 			URL:   os.Getenv("ASSISTANT_ANALYTIC_URL"),
 		},
-		DB: DBConfig{
-			User:       os.Getenv("DB_USER"),
-			Password:   os.Getenv("DB_PASSWORD"),
-			Name:       os.Getenv("DB_NAME"),
-			Host:       os.Getenv("DB_HOST"),
-			Port:       os.Getenv("DB_PORT"),
-			Timeout:    dbTimeout,
-			LogMaxFile: dbLogMaxFile,
+		DBApp: DBConfig{
+			User:       os.Getenv("DB_APP_USER"),
+			Password:   os.Getenv("DB_APP_PASSWORD"),
+			Name:       os.Getenv("DB_APP_NAME"),
+			Host:       os.Getenv("DB_APP_HOST"),
+			Port:       os.Getenv("DB_APP_PORT"),
+			Timeout:    dbAppTimeout,
+			LogMaxFile: dbAppLogMaxFile,
+		},
+		DBDWH: DBConfig{
+			User:       os.Getenv("DB_DWH_USER"),
+			Password:   os.Getenv("DB_DWH_PASSWORD"),
+			Name:       os.Getenv("DB_DWH_NAME"),
+			Host:       os.Getenv("DB_DWH_HOST"),
+			Port:       os.Getenv("DB_DWH_PORT"),
+			Timeout:    dbDWHTimeout,
+			LogMaxFile: dbDWHLogMaxFile,
 		},
 		Log: LogConfig{
 			Path:          os.Getenv("LOG_PATH"),
