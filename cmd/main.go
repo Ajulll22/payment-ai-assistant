@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/Ajulll22/payment-ai-assistant/internal/middleware"
 	"github.com/Ajulll22/payment-ai-assistant/internal/route"
@@ -67,7 +68,7 @@ func (p *program) Init(env svc.Environment) error {
 		Port:            cfg.DBApp.Port,
 		Name:            cfg.DBApp.Name,
 		Timeout:         cfg.DBApp.Timeout,
-		LogDir:          cfg.Log.Path + "logs/db",
+		LogDir:          filepath.Join(cfg.Log.Path, "db"),
 		LogMaxFile:      cfg.DBApp.LogMaxFile,
 		FallbackLogFile: p.logFile,
 		AppKey:          cfg.App.Key,
@@ -83,7 +84,7 @@ func (p *program) Init(env svc.Environment) error {
 		Port:            cfg.DBDWH.Port,
 		Name:            cfg.DBDWH.Name,
 		Timeout:         cfg.DBDWH.Timeout,
-		LogDir:          cfg.Log.Path + "logs/db",
+		LogDir:          filepath.Join(cfg.Log.Path, "db"),
 		LogMaxFile:      cfg.DBDWH.LogMaxFile,
 		FallbackLogFile: p.logFile,
 		AppKey:          cfg.App.Key,
